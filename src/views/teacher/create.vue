@@ -5,6 +5,25 @@
       <el-form-item label="名称">
         <el-input v-model="teacherData.name" placeholder="名称"></el-input>
       </el-form-item>
+
+
+      <el-form-item label="图片">
+        <!-- 头衔缩略图 -->
+        <pan-thumb :image="teacherData.avatar" />
+        <!-- 文件上传按钮 -->
+        <el-button type="primary" icon="el-icon-upload" @click="imagecropperShow=true">更换头像</el-button>
+        <image-cropper
+          v-show="imagecropperShow"
+          :width="300"
+          :height="300"
+          :key="imagecropperKey"
+          :url="BASE_API+'/oss/ossFile'"
+          field="file"
+          @close="close"
+          @crop-upload-success="cropSuccess"
+        />
+      </el-form-item>
+
       <el-form-item>
         <el-button type="primary" @click="onSubmit">添加</el-button>
         <el-button>取消</el-button>
@@ -15,14 +34,23 @@
 
 <script>
 import teacher from '@/api/teacher'
-
+import ImageCropper from '@/components/ImageCropper'
+import PanThumb from '@/components/PanThumb'
 export default {
+  components: {
+    ImageCropper,
+    PanThumb
+  },
   data() {
     return {
       teacherData: {
         name: '',
-        id: ''
-      }
+        id: '',
+        avatar: ''
+      },
+      imagecropperKey: 0,
+      imagecropperShow: false,
+      BASE_API: process.env.VUE_APP_BASE_API
     }
   },
   created() {
@@ -34,6 +62,14 @@ export default {
     }
   },
   methods: {
+    close() {
+      this.imagecropperShow = false
+      this.imagecropperKey = this.imagecropperKey + 1
+    },
+    cropSuccess(data) {
+      this.teacherData.avatar = data.url
+      this.imagecropperKey = this.imagecropperKey + 1
+    },
     init() {
       if (this.$route.params && this.$route.params.id) {
         const ids = this.$route.params.id
