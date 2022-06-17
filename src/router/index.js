@@ -104,7 +104,27 @@ export const constantRoutes = [
       }
     ]
   },
-
+  {
+    path: '/subject',
+    component: Layout,
+    redirect: '/subject/data',
+    name: '科目管理',
+    meta: { title: '科目管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'list',
+        name: '科目列表',
+        component: () => import('@/views/subject/list'),
+        meta: { title: '科目列表', icon: 'table' }
+      },
+      {
+        path: 'create',
+        name: '科目添加',
+        component: () => import('@/views/subject/create'),
+        meta: { title: '科目添加', icon: 'tree' }
+      }
+    ]
+  },
   {
     path: '/form',
     component: Layout,
